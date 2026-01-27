@@ -1,0 +1,330 @@
+/* ==================== DASHBOARD LAYOUT ==================== */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.sidebar-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.btn-cerrar-sidebar {
+  display: none;
+  position: absolute;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 28px;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 0;
+}
+
+.sidebar-logout {
+  color: #fecaca;
+}
+
+.sidebar-logout:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* ==================== DASHBOARD MAIN ==================== */
+.dashboard-main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+.dashboard-header {
+  background-color: white;
+  padding: 20px 32px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.btn-menu-mobile {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: var(--color-text);
+}
+
+.dashboard-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.usuario-info span:first-child {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.usuario-rol {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  background-color: var(--color-bg);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+
+/* ==================== DASHBOARD CONTENT ==================== */
+.dashboard-content {
+  padding: 32px;
+  flex: 1;
+}
+
+.bienvenida {
+  margin-bottom: 32px;
+}
+
+.bienvenida h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.bienvenida p {
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+}
+
+/* ==================== ESTADÍSTICAS ==================== */
+.estadisticas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.estadistica-card {
+  background-color: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.estadistica-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.estadistica-icono {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.estadistica-info {
+  flex: 1;
+}
+
+.estadistica-titulo {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.estadistica-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.clases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.materia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .chart-grid, .clases-grid, .materia-header {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* ==================== ACCESOS RÁPIDOS ==================== */
+.accesos-rapidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.acceso-rapido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background-color: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.acceso-rapido:hover {
+  border-color: var(--color-primary);
+  background-color: #eff6ff;
+  transform: translateY(-2px);
+}
+
+.acceso-rapido svg {
+  color: var(--color-primary);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar-abierto {
+    transform: translateX(0);
+  }
+
+  .btn-cerrar-sidebar {
+    display: flex;
+  }
+
+  .dashboard-main {
+    margin-left: 0;
+  }
+
+  .btn-menu-mobile {
+    display: flex;
+  }
+
+  .dashboard-header {
+    padding: 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .bienvenida h2 {
+    font-size: 1.5rem;
+  }
+
+  .estadisticas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .usuario-info {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .accesos-rapidos {
+    grid-template-columns: 1fr;
+  }
+}
