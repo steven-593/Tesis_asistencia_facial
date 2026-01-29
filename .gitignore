@@ -7,12 +7,22 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependencias (Librerías pesadas)
+node_modules/
+
+# Archivos de Compilación (React/Vite)
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Variables de Entorno y Seguridad (¡MUY IMPORTANTE!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos del Editor (VS Code, etc)
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,7 +32,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-# Dependency directories
-node_modules/
-backend/uploads/
+
+# CARPETAS DE FOTOS (Para que no se suban al Git)
 uploads/
+backend/uploads/
