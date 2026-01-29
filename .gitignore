@@ -25,3 +25,4 @@ dist-ssr
 # Dependency directories
 node_modules/
 backend/uploads/
+uploads/
