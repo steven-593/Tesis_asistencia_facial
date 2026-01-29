@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import {
-  BookOpen,
   Plus,
   Edit,
   Trash2,
@@ -12,7 +11,8 @@ import {
   X,
   LogOut,
   Calendar,
-  Clock
+  Clock,
+  User
 } from 'lucide-react';
 import Modal from '../comunes/Modal';
 import AlertaDialogo from '../comunes/AlertaDialogo';
@@ -24,6 +24,7 @@ import {
   eliminarMateria
 } from '../../api/materiasApi';
 import { obtenerHorarios } from '../../api/horariosApi';
+import { obtenerDocentes } from '../../api/docentesApi';
 import '../../estilos/dashboard.css';
 
 const Materias = () => {
@@ -34,6 +35,7 @@ const Materias = () => {
   // Estados
   const [materias, setMaterias] = useState([]);
   const [horarios, setHorarios] = useState([]);
+  const [docentes, setDocentes] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -45,7 +47,8 @@ const Materias = () => {
     id_materia: '',
     nombre_materia: '',
     carrera: '',
-    id_horario: ''
+    id_horario: '',
+    id_docente: ''
   });
 
   const carreras = [
@@ -68,7 +71,7 @@ const Materias = () => {
   const cargarDatos = async () => {
     try {
       setCargando(true);
-      await Promise.all([cargarMaterias(), cargarHorarios()]);
+      await Promise.all([cargarMaterias(), cargarHorarios(), cargarDocentes()]);
     } finally {
       setCargando(false);
     }
@@ -98,6 +101,17 @@ const Materias = () => {
     }
   };
 
+  const cargarDocentes = async () => {
+    try {
+      const response = await obtenerDocentes();
+      if (response.exito) {
+        setDocentes(response.datos || []);
+      }
+    } catch (error) {
+      console.error('Error al cargar docentes:', error);
+    }
+  };
+
   const mostrarAlerta = (tipo, mensaje) => {
     setAlerta({ mostrar: true, tipo, mensaje });
     setTimeout(() => {
@@ -111,7 +125,8 @@ const Materias = () => {
       id_materia: '',
       nombre_materia: '',
       carrera: '',
-      id_horario: ''
+      id_horario: '',
+      id_docente: ''
     });
     setModalAbierto(true);
   };
@@ -122,7 +137,8 @@ const Materias = () => {
       id_materia: materiaData.id_materia,
       nombre_materia: materiaData.nombre_materia,
       carrera: materiaData.carrera,
-      id_horario: materiaData.id_horario
+      id_horario: materiaData.id_horario,
+      id_docente: materiaData.id_docente || ''
     });
     setModalAbierto(true);
   };
@@ -137,9 +153,8 @@ const Materias = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones
     if (!formulario.nombre_materia || !formulario.carrera || !formulario.id_horario) {
-      mostrarAlerta('advertencia', 'Por favor completa todos los campos');
+      mostrarAlerta('advertencia', 'Por favor completa todos los campos obligatorios');
       return;
     }
 
@@ -191,7 +206,8 @@ const Materias = () => {
   const materiasFiltradas = materias.filter(m =>
     m.nombre_materia?.toLowerCase().includes(busqueda.toLowerCase()) ||
     m.carrera?.toLowerCase().includes(busqueda.toLowerCase()) ||
-    m.dia?.toLowerCase().includes(busqueda.toLowerCase())
+    m.dia?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    m.nombre_docente?.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   const handleLogout = async () => {
@@ -294,7 +310,7 @@ const Materias = () => {
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="Buscar por nombre, carrera o día..."
+                    placeholder="Buscar por nombre, carrera, docente..."
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     style={{ paddingLeft: '45px' }}
@@ -311,6 +327,7 @@ const Materias = () => {
                       <tr>
                         <th>ID</th>
                         <th>Nombre de Materia</th>
+                        <th>Docente</th>
                         <th>Carrera</th>
                         <th>Horario</th>
                         <th>Acciones</th>
@@ -319,7 +336,7 @@ const Materias = () => {
                     <tbody>
                       {materiasFiltradas.length === 0 ? (
                         <tr>
-                          <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>
+                          <td colSpan="6" style={{ textAlign: 'center', padding: '40px' }}>
                             No se encontraron materias
                           </td>
                         </tr>
@@ -328,6 +345,16 @@ const Materias = () => {
                           <tr key={m.id_materia}>
                             <td data-label="ID">{m.id_materia}</td>
                             <td data-label="Nombre de Materia"><strong>{m.nombre_materia}</strong></td>
+                            <td data-label="Docente">
+                              {m.nombre_docente && m.nombre_docente !== 'Sin asignar' ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <User size={14} color="#64748b" />
+                                  <span>{m.nombre_docente}</span>
+                                </div>
+                              ) : (
+                                <span style={{ color: '#ef4444', fontSize: '0.85rem' }}>Sin asignar</span>
+                              )}
+                            </td>
                             <td data-label="Carrera">{m.carrera}</td>
                             <td data-label="Horario">
                               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -426,38 +453,24 @@ const Materias = () => {
                 </option>
               ))}
             </select>
-            {horarios.length === 0 && (
-              <small style={{ color: 'var(--color-danger)', fontSize: '0.85rem', marginTop: '4px', display: 'block' }}>
-                No hay horarios disponibles. Por favor, crea un horario primero.
-              </small>
-            )}
           </div>
 
-          {formulario.id_horario && (
-            <div style={{
-              padding: '12px',
-              backgroundColor: '#dbeafe',
-              borderRadius: '8px',
-              marginBottom: '16px'
-            }}>
-              {(() => {
-                const horarioSeleccionado = horarios.find(h => h.id_horario === parseInt(formulario.id_horario));
-                if (horarioSeleccionado) {
-                  return (
-                    <div>
-                      <p style={{ fontSize: '0.9rem', color: '#1e40af', margin: '0 0 6px 0' }}>
-                        <strong>Horario seleccionado:</strong>
-                      </p>
-                      <p style={{ fontSize: '0.85rem', color: '#1e40af', margin: 0 }}>
-                        📅 {horarioSeleccionado.dia} | 🕐 {horarioSeleccionado.hora_inicio} - {horarioSeleccionado.hora_fin}
-                      </p>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-            </div>
-          )}
+          <div className="form-group">
+            <label className="form-label">Docente (Opcional)</label>
+            <select
+              name="id_docente"
+              className="form-select"
+              value={formulario.id_docente}
+              onChange={handleChange}
+            >
+              <option value="">Seleccionar docente</option>
+              {docentes.map(doc => (
+                <option key={doc.id_docente} value={doc.id_docente}>
+                  {doc.nombres} {doc.apellidos} - {doc.especialidad || 'Sin especialidad'}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex gap-8" style={{ marginTop: '24px' }}>
             <button

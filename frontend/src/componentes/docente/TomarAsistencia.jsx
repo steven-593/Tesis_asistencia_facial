@@ -4,17 +4,14 @@ import { useAuth } from '../../hooks/useAuth';
 import {
   ClipboardList,
   Calendar,
-  Check,
-  X as XIcon,
-  Search,
-  ArrowLeft,
-  Menu,
-  LogOut,
-  X as XClose,
   CheckCircle,
-  XCircle
+  XCircle,
+  Menu,
+  X as XClose,
+  ArrowLeft,
+  Camera, // <--- Importamos el icono de cámara
+  LogOut
 } from 'lucide-react';
-import Modal from '../comunes/Modal';
 import AlertaDialogo from '../comunes/AlertaDialogo';
 import Cargando from '../comunes/Cargando';
 import { obtenerMaterias } from '../../api/materiasApi';
@@ -83,6 +80,17 @@ const TomarAsistencia = () => {
     cargarEstudiantesDeMateria(materia.id_materia);
   };
 
+  // --- NUEVA FUNCIÓN: IR AL ESCÁNER ---
+  const abrirEscaner = () => {
+    navigate('/docente/escaner', {
+      state: {
+        id_materia: materiaSeleccionada.id_materia,
+        id_horario: materiaSeleccionada.id_horario,
+        nombre_materia: materiaSeleccionada.nombre_materia
+      }
+    });
+  };
+
   const mostrarAlerta = (tipo, mensaje) => {
     setAlerta({ mostrar: true, tipo, mensaje });
     setTimeout(() => {
@@ -107,7 +115,6 @@ const TomarAsistencia = () => {
 
     try {
       setGuardando(true);
-      
       const datos = {
         id_estudiante: estudiante.id_estudiante,
         id_materia: materiaSeleccionada.id_materia,
@@ -122,7 +129,6 @@ const TomarAsistencia = () => {
       
       if (response.exito) {
         mostrarAlerta('exito', `Asistencia marcada: ${estado}`);
-        // Recargar asistencias
         cargarEstudiantesDeMateria(materiaSeleccionada.id_materia);
       } else {
         mostrarAlerta('error', response.mensaje);
@@ -263,23 +269,36 @@ const TomarAsistencia = () => {
               </div>
             ) : (
               <div style={{ padding: '20px' }}>
-                <div className="materia-header">
+                <div className="materia-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div>
                     <h3 style={{ margin: 0 }}>{materiaSeleccionada.nombre_materia}</h3>
                     <p style={{ margin: '4px 0', color: '#64748b' }}>
                       {materiaSeleccionada.carrera} - {materiaSeleccionada.dia} {materiaSeleccionada.hora_inicio}-{materiaSeleccionada.hora_fin}
                     </p>
                   </div>
-                  <button 
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      setMateriaSeleccionada(null);
-                      setEstudiantes([]);
-                      setAsistenciasDelDia([]);
-                    }}
-                  >
-                    Cambiar Materia
-                  </button>
+                  
+                  {/* --- BOTONES DE ACCIÓN --- */}
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={abrirEscaner}
+                      style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      <Camera size={20} />
+                      Modo Automático (Cámara)
+                    </button>
+
+                    <button 
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        setMateriaSeleccionada(null);
+                        setEstudiantes([]);
+                        setAsistenciasDelDia([]);
+                      }}
+                    >
+                      Cambiar Materia
+                    </button>
+                  </div>
                 </div>
 
                 {cargando ? (

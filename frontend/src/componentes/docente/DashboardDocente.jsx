@@ -13,9 +13,10 @@ import {
   Users,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  Camera // Icono para la cámara (opcional, si decides añadir el escáner aquí)
 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts'; // Asegúrate de importar lo necesario de recharts
 import Cargando from '../comunes/Cargando';
 import { obtenerMaterias } from '../../api/materiasApi';
 import { obtenerAsistenciasHoy, obtenerAsistenciasMes } from '../../api/estadisticasApi';
@@ -66,9 +67,10 @@ const DashboardDocente = () => {
     navigate('/');
   };
 
+  // --- MENÚ LATERAL (SIDEBAR) ---
   const menuItems = [
     { id: 'inicio', nombre: 'Inicio', icono: LayoutDashboard, ruta: '/dashboard' },
-    { id: 'asistencias', nombre: 'Tomar Asistencia', icono: ClipboardList, ruta: '/docente/asistencias' },
+    { id: 'asistencias', nombre: 'Tomar Asistencia', icono: ClipboardList, ruta: '/docente/asistencias' }, // Esta ruta debe coincidir con App.jsx
     { id: 'materias', nombre: 'Mis Materias', icono: BookOpen, ruta: '/docente/materias' },
     { id: 'horarios', nombre: 'Mis Horarios', icono: Calendar, ruta: '/docente/horarios' },
   ];
@@ -197,7 +199,8 @@ const DashboardDocente = () => {
               </div>
 
               {/* Gráficos */}
-                            <div className="chart-grid">                {/* Gráfico de pastel - Asistencias del mes */}
+              <div className="chart-grid">
+                {/* Gráfico de pastel - Asistencias del mes */}
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">
@@ -206,26 +209,28 @@ const DashboardDocente = () => {
                   </div>
                   <div style={{ padding: '20px' }}>
                     {estadisticasMes && estadisticasMes.total > 0 ? (
-                      <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                          <Pie
-                            data={datosGraficoPastel}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={100}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {datosGraficoPastel.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      <div style={{ width: '100%', height: 300 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={datosGraficoPastel}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                              outerRadius={80}
+                              fill="#8884d8"
+                              dataKey="value"
+                            >
+                              {datosGraficoPastel.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
                     ) : (
                       <p style={{ textAlign: 'center', color: '#64748b', padding: '40px' }}>
                         No hay asistencias registradas este mes
@@ -335,6 +340,7 @@ const DashboardDocente = () => {
                               {materia.hora_inicio} - {materia.hora_fin}
                             </span>
                           </div>
+                          {/* Botón en la tarjeta de clase */}
                           <button
                             className="btn btn-primary"
                             style={{ width: '100%', marginTop: '12px' }}
@@ -404,7 +410,7 @@ const DashboardDocente = () => {
                 </div>
               </div>
 
-              {/* Accesos rápidos */}
+              {/* Accesos rápidos - AQUI AGREGAMOS EL BOTON */}
               <div className="card mt-16">
                 <div className="card-header">
                   <h3 className="card-title">Accesos Rápidos</h3>
@@ -417,6 +423,16 @@ const DashboardDocente = () => {
                     <ClipboardList size={24} />
                     <span>Tomar Asistencia</span>
                   </button>
+                  
+                  {/* Puedes agregar aquí el botón del Escáner si ya creaste el componente */}
+                  {/* <button 
+                    className="acceso-rapido"
+                    onClick={() => navigate('/docente/escaner')}
+                  >
+                    <Camera size={24} />
+                    <span>Escáner Facial</span>
+                  </button> */}
+
                   <button 
                     className="acceso-rapido"
                     onClick={() => navigate('/docente/materias')}

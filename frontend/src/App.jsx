@@ -10,6 +10,7 @@ import NoAutorizado from './componentes/comunes/NoAutorizado';
 import DashboardAdmin from './componentes/administrador/DashboardAdmin';
 import DashboardDocente from './componentes/docente/DashboardDocente';
 import DashboardEstudiante from './componentes/estudiante/DashboardEstudiante';
+import Reportes from './componentes/administrador/Reportes';
 
 // Módulos de Administrador
 import Usuarios from './componentes/administrador/Usuarios';
@@ -19,8 +20,17 @@ import Horarios from './componentes/administrador/Horarios';
 import Materias from './componentes/administrador/Materias';
 import Matriculas from './componentes/administrador/Matriculas';
 
+import EscanerFacial from './componentes/docente/EscanerFacial';
+import RegistroFacial from './componentes/estudiante/RegistroFacial';
+
+import MisMateriasEstudiante from './componentes/estudiante/MisMaterias'; // Cambia el nombre si quieres evitar conflicto con el de docente
+import MisHorariosEstudiante from './componentes/estudiante/MisHorarios';
+
+
 // Módulos de Docente
 import TomarAsistencia from './componentes/docente/TomarAsistencia';
+import MisMaterias from './componentes/docente/MisMaterias';
+import MisHorarios from './componentes/docente/MisHorarios';
 
 // Módulos de Estudiante
 import MisAsistencias from './componentes/estudiante/MisAsistencias';
@@ -85,7 +95,7 @@ function App() {
                   <Route path="horarios" element={<Horarios />} />
                   <Route path="materias" element={<Materias />} />
                   <Route path="matriculas" element={<Matriculas />} />
-                  <Route path="reportes" element={<div>Módulo de Reportes (próximamente)</div>} />
+                  <Route path="reportes" element={<Reportes />} />
                 </Routes>
               </RutaPorRol>
             } 
@@ -98,8 +108,9 @@ function App() {
               <RutaPorRol rolesPermitidos={['Docente']}>
                 <Routes>
                   <Route path="asistencias" element={<TomarAsistencia />} />
-                  <Route path="materias" element={<div>Mis Materias (próximamente)</div>} />
-                  <Route path="horarios" element={<div>Mis Horarios (próximamente)</div>} />
+                  <Route path="materias" element={<MisMaterias />} />
+                  <Route path="horarios" element={<MisHorarios />} />
+                  <Route path="escaner" element={<EscanerFacial />} />
                 </Routes>
               </RutaPorRol>
             } 
@@ -112,9 +123,9 @@ function App() {
               <RutaPorRol rolesPermitidos={['Estudiante']}>
                 <Routes>
                   <Route path="asistencias" element={<MisAsistencias />} />
-                  <Route path="materias" element={<div>Mis Materias (próximamente)</div>} />
-                  <Route path="horarios" element={<div>Mis Horarios (próximamente)</div>} />
-                  <Route path="registro-facial" element={<div>Registro Facial (próximamente)</div>} />
+                  <Route path="materias" element={<MisMateriasEstudiante />} />
+                  <Route path="horarios" element={<MisHorariosEstudiante />} />
+                  <Route path="registro-facial" element={<RegistroFacial />} />
                 </Routes>
               </RutaPorRol>
             } 

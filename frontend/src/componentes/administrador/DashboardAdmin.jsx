@@ -9,14 +9,14 @@ import {
   Calendar, 
   BookOpen, 
   ClipboardList, 
-  FileText,
+  FileText, // Importado una sola vez correctamente
   LogOut,
   Menu,
   X,
   TrendingUp,
   Clock
 } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Cargando from '../comunes/Cargando';
 import { obtenerEstadisticasGenerales, obtenerAsistenciasHoy } from '../../api/estadisticasApi';
 import '../../estilos/dashboard.css';
@@ -60,6 +60,7 @@ const DashboardAdmin = () => {
     navigate('/');
   };
 
+  // Menú lateral actualizado con Reportes
   const menuItems = [
     { id: 'inicio', nombre: 'Inicio', icono: LayoutDashboard, ruta: '/dashboard' },
     { id: 'usuarios', nombre: 'Usuarios', icono: Users, ruta: '/admin/usuarios' },
@@ -81,8 +82,8 @@ const DashboardAdmin = () => {
 
   // Datos para el gráfico de pastel
   const datosGraficoPastel = estadisticas ? [
-    { name: 'Presentes', value: estadisticas.total_presentes, color: '#10b981' },
-    { name: 'Ausentes', value: estadisticas.total_asistencias - estadisticas.total_presentes, color: '#ef4444' }
+    { name: 'Presentes', value: parseInt(estadisticas.total_presentes || 0), color: '#10b981' },
+    { name: 'Ausentes', value: parseInt(estadisticas.total_asistencias || 0) - parseInt(estadisticas.total_presentes || 0), color: '#ef4444' }
   ] : [];
 
   return (
@@ -198,7 +199,8 @@ const DashboardAdmin = () => {
               </div>
 
               {/* Gráficos */}
-                            <div className="chart-grid">                {/* Gráfico de líneas - Tendencia semanal */}
+              <div className="chart-grid">
+                {/* Gráfico de líneas - Tendencia semanal */}
                 <div className="card">
                   <div className="card-header">
                     <h3 className="card-title">
@@ -305,7 +307,7 @@ const DashboardAdmin = () => {
                         color: estadisticas?.porcentaje_asistencia >= 75 ? '#10b981' : '#ef4444',
                         margin: 0 
                       }}>
-                        {estadisticas?.porcentaje_asistencia?.toFixed(1) || 0}%
+                        {estadisticas?.porcentaje_asistencia ? parseFloat(estadisticas.porcentaje_asistencia).toFixed(1) : 0}%
                       </h3>
                     </div>
 
@@ -379,7 +381,7 @@ const DashboardAdmin = () => {
                 </div>
               </div>
 
-              {/* Accesos rápidos */}
+              {/* Accesos rápidos - Botones finales */}
               <div className="card mt-16">
                 <div className="card-header">
                   <h3 className="card-title">Accesos Rápidos</h3>
@@ -406,6 +408,8 @@ const DashboardAdmin = () => {
                     <BookOpen size={24} />
                     <span>Gestionar Materias</span>
                   </button>
+                  
+                  {/* BOTÓN DE REPORTES */}
                   <button 
                     className="acceso-rapido"
                     onClick={() => navigate('/admin/reportes')}

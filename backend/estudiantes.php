@@ -39,7 +39,7 @@ switch ($metodo) {
 }
 
 function obtenerEstudiantes() {
-    Seguridad::verificarRol(['Administrador']);
+    Seguridad::verificarRol(['Administrador', 'Estudiante']);
     
     $id = $_GET['id'] ?? null;
     $accion = $_GET['accion'] ?? 'listar';
